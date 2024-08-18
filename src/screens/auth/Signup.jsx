@@ -9,15 +9,15 @@ import {
   TouchableOpacity,
 } from 'react-native';
 import Button from '../../components/generic/Button';
+import RadioButtonGroup from './RadioComponent';
 
 const Signup = ({navigation}) => {
   return (
     <View
       style={{
         flex: 1,
-
         alignItems: 'center',
-        paddingTop: 60,
+        paddingTop: 20,
         // justifyContent: "space-between",
       }}>
       <View
@@ -28,9 +28,30 @@ const Signup = ({navigation}) => {
         }}>
         <Image
          source={require('../../assets/images.png')}
-          style={{ width: 100, height: 100, marginBottom: 10,borderRadius:12,marginTop:30 }}
+          style={{ width: 100, height: 100, marginBottom: 10,borderRadius:12 }}
         />
        
+      </View>
+      <View
+        style={{
+          flexDirection: 'row',
+          alignItems: 'center',
+          marginBottom: 10,
+          borderWidth: 1,
+          borderColor: '#1111111A',
+          borderRadius: 8,
+          paddingHorizontal: 12,
+          width: '94%',
+        }}>
+        <Image
+          source={require('../../assets/mobile.png')}
+          style={{width: 24, height: 24}}
+        />
+        <TextInput
+          placeholder="Enter your full name"
+          style={{flex: 1, marginLeft: 10}}
+          placeholderTextColor={'#11111166'}
+        />
       </View>
       <View
         style={{
@@ -96,6 +117,7 @@ const Signup = ({navigation}) => {
           placeholderTextColor={'#11111166'}
         />
       </View>
+      <RadioButtonGroup />
       <View
         style={{
           flexDirection: 'row',
@@ -139,7 +161,7 @@ const Signup = ({navigation}) => {
         />
       </View>
       <Button
-        onPress={() => navigation.navigate('Home')}
+        onPress={() => navigation.navigate('OtpScreen')}
         title="Signup"
         filled
         width={'94%'}
