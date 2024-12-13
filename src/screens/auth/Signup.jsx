@@ -1,255 +1,249 @@
 /* eslint-disable prettier/prettier */
 /* eslint-disable react-native/no-inline-styles */
-import React from 'react';
+import React, { useState } from 'react';
 import {
   Text,
   View,
   Image,
   TextInput,
   TouchableOpacity,
+  ScrollView,
+  Button,
 } from 'react-native';
-import Button from '../../components/generic/Button';
-import RadioButtonGroup from './RadioComponent';
+import CheckboxExample from '../../components/generic/CustomCheckbox';
 
 const Signup = ({navigation}) => {
+  const [gender, setGender] = useState(null);
+  const [name, setName] = useState('');
+  const [name1, setName1] = useState('');
+
+  const getBackgroundColor = (selectedGender) => {
+    if (gender === selectedGender) {
+      if (selectedGender === 'Male') return '#ADD8E6'; // Blue
+      if (selectedGender === 'Female') return '#FFC0CB'; // Pink
+      return '#D3D3D3'; // Gray for 'Other'
+    }
+    return '#FFFFFF'; // Default background color
+  };
   return (
-    <View
-      style={{
-        flex: 1,
-        alignItems: 'center',
-        paddingTop: 20,
-        // justifyContent: "space-between",
-      }}>
-      <View
-        style={{
-          alignItems: 'center',
-          justifyContent: 'center',
-          marginBottom: 40,
-        }}>
-        <Image
-         source={require('../../assets/images.png')}
-          style={{ width: 100, height: 100, marginBottom: 10,borderRadius:12 }}
-        />
-       
-      </View>
-      <View
-        style={{
-          flexDirection: 'row',
-          alignItems: 'center',
-          marginBottom: 10,
-          borderWidth: 1,
-          borderColor: '#1111111A',
-          borderRadius: 8,
-          paddingHorizontal: 12,
-          width: '94%',
-        }}>
-        <Image
-          source={require('../../assets/mobile.png')}
-          style={{width: 24, height: 24}}
-        />
-        <TextInput
-          placeholder="Enter your full name"
-          style={{flex: 1, marginLeft: 10}}
-          placeholderTextColor={'#11111166'}
-        />
-      </View>
-      <View
-        style={{
-          flexDirection: 'row',
-          alignItems: 'center',
-          marginBottom: 10,
-          borderWidth: 1,
-          borderColor: '#1111111A',
-          borderRadius: 8,
-          paddingHorizontal: 12,
-          width: '94%',
-        }}>
-        <Image
-          source={require('../../assets/mobile.png')}
-          style={{width: 24, height: 24}}
-        />
-        <TextInput
-          placeholder="Enter your email"
-          style={{flex: 1, marginLeft: 10}}
-          placeholderTextColor={'#11111166'}
-        />
-      </View>
-      <View
-        style={{
-          flexDirection: 'row',
-          alignItems: 'center',
-          marginBottom: 10,
-          borderWidth: 1,
-          borderColor: '#1111111A',
-          borderRadius: 8,
-          paddingHorizontal: 12,
-          width: '94%',
-        }}>
-        <Image
-          source={require('../../assets/mobile.png')}
-          style={{width: 24, height: 24}}
-        />
-        <TextInput
-          placeholder="Enter your Phone"
-          style={{flex: 1, marginLeft: 10}}
-          placeholderTextColor={'#11111166'}
-        />
-      </View>
-      <View
-        style={{
-          flexDirection: 'row',
-          alignItems: 'center',
-          marginBottom: 10,
-          borderWidth: 1,
-          borderColor: '#1111111A',
-          borderRadius: 8,
-          paddingHorizontal: 12,
-          width: '94%',
-        }}>
-        <Image
-          source={require('../../assets/mobile.png')}
-          style={{width: 24, height: 24}}
-        />
-        <TextInput
-        type="date"
-          placeholder="Enter date of birth"
-          style={{flex: 1, marginLeft: 10}}
-          placeholderTextColor={'#11111166'}
-        />
-      </View>
-      <RadioButtonGroup />
-      <View
-        style={{
-          flexDirection: 'row',
-          alignItems: 'center',
-          marginBottom: 10,
-          borderWidth: 1,
-          borderColor: '#1111111A',
-          borderRadius: 8,
-          paddingHorizontal: 12,
-          width: '94%',
-        }}>
-        <Image
-          source={require('../../assets/mobile.png')}
-          style={{width: 24, height: 24}}
-        />
-        <TextInput
-          placeholder="Enter your password"
-          style={{flex: 1, marginLeft: 10}}
-          placeholderTextColor={'#11111166'}
-        />
-      </View>
-      <View
-        style={{
-          flexDirection: 'row',
-          alignItems: 'center',
-          marginBottom: 10,
-          borderWidth: 1,
-          borderColor: '#1111111A',
-          borderRadius: 8,
-          paddingHorizontal: 12,
-          width: '94%',
-        }}>
-        <Image
-          source={require('../../assets/mobile.png')}
-          style={{width: 24, height: 24}}
-        />
-        <TextInput
-          placeholder="Confirm password"
-          style={{flex: 1, marginLeft: 10}}
-          placeholderTextColor={'#11111166'}
-        />
-      </View>
-      <Button
-        onPress={() => navigation.navigate('OtpScreen')}
-        title="Signup"
-        filled
-        width={'94%'}
-        height={48}
-        size={16}
-        radius={8}
-      />
-      <View style={{marginBottom: 10}}>
-        <Text style={{fontSize: 15, fontWeight: '400', marginTop: 20}}>Or</Text>
-      </View>
-      <View
-        style={{
-          flexDirection: 'row',
-          justifyContent: 'center',
-          marginTop: 10,
-          display: 'flex',
-          gap: 15,
-          bottom: 0,
-        }}>
-        <TouchableOpacity
-          style={{
-            borderWidth: 2,
-            borderColor: '#d4d9d6',
-            borderRadius: 8,
-            width: '45%',
-            height: 48,
-            alignItems: 'center',
-            justifyContent: 'center',
-            flexDirection: 'row',
-            gap: 12,
-          }}>
-          <Image source={require('../../assets/facebook.png')} style={{ width: 24, height: 24 }} />
-          <Text style={{fontSize: 16, fontWeight: '600', color: '#191919'}}>
-            Facebook
-          </Text>
-        </TouchableOpacity>
+    <View style={{flex: 1, width: '100%'}}>
+      <ScrollView contentContainerStyle={{alignItems: 'center', paddingVertical: 20}}>
+        {/* Top Section */}
+        <View style={{width: '100%', alignItems: 'center'}}>
+          <View style={{alignItems: 'center', justifyContent: 'center', marginBottom: 40}}>
+            <Image
+              source={require('../../assets/images.png')}
+              style={{width: 100, height: 100, marginBottom: 10, borderRadius: 12}}
+            />
+          </View>
+{name1 &&<Text>{name1} is awesome name</Text>}
+          {/* Input Fields */}
+          <View style={styles.inputContainer}>
+            <Image source={require('../../assets/mobile.png')} style={styles.iconStyle} />
+            <TextInput
+              placeholder="Enter your full name"
+              style={styles.textInput}
+              placeholderTextColor={'#11111166'}
+              onChangeText={(text) => setName(text)} // Update the name as the user types
+              onBlur={() => {
+                setName1(name)
+              }}
+              value={name} // Control the value of the input
+            
+            />
+          </View>
 
-        <TouchableOpacity
-          style={{
-            borderWidth: 2,
-            borderColor: '#d4d9d6',
-            borderRadius: 8,
-            width: '45%',
-            height: 48,
-            alignItems: 'center',
-            justifyContent: 'center',
-            flexDirection: 'row',
-            gap: 12,
-          }}>
-          <Image source={require('../../assets/google.png')} style={{ width: 24, height: 24 }} />
+          <View style={styles.inputContainer}>
+            <Image source={require('../../assets/mobile.png')} style={styles.iconStyle} />
+            <TextInput
+              placeholder="Enter your email"
+              style={styles.textInput}
+              placeholderTextColor={'#11111166'}
+            />
+          </View>
 
-          <Text style={{fontSize: 16, fontWeight: '600', color: '#191919'}}>
-            Google
-          </Text>
-        </TouchableOpacity>
-      </View>
-      <View
-        style={{
-          flexDirection: 'row',
-          marginTop: 10,
-          display: 'flex',
-          gap: 4,
-          position: 'absolute',
-          bottom: 24,
-        }}>
-        <Text
-          style={{
-            fontSize: 15,
-            fontWeight: '400',
-            textAlign: 'center',
-            color: '#111111',
-          }}>
-          Already have an account?
-        </Text>
-        <TouchableOpacity onPress={() => navigation.navigate('Login')}>
-          <Text
+          <View style={styles.inputContainer}>
+            <Image source={require('../../assets/mobile.png')} style={styles.iconStyle} />
+            <TextInput
+              placeholder="Enter your Phone"
+              style={styles.textInput}
+              placeholderTextColor={'#11111166'}
+            />
+          </View>
+
+          <View style={styles.inputContainer}>
+            <Image source={require('../../assets/mobile.png')} style={styles.iconStyle} />
+            <TextInput
+              placeholder="Enter date of birth"
+              style={styles.textInput}
+              placeholderTextColor={'#11111166'}
+            />
+          </View>
+
+          {/* <RadioButtonGroup /> */}
+          <View style={{flexDirection: 'row', marginBottom: 20}}>
+          <TouchableOpacity
             style={{
-              fontSize: 15,
-              fontWeight: '600',
-              textAlign: 'center',
-              color: '#111111',
-            }}>
-            LogIn
-          </Text>
+              backgroundColor: getBackgroundColor('Male'),
+              padding: 10,
+              borderRadius: 8,
+              marginHorizontal: 5,
+              width: '28%',
+              alignItems: 'center',
+            }}
+            onPress={() => setGender('Male')}>
+            <Text>Male</Text>
+          </TouchableOpacity>
+          <TouchableOpacity
+            style={{
+              backgroundColor: getBackgroundColor('Female'),
+              padding: 10,
+              borderRadius: 8,
+              marginHorizontal: 5,
+              width: '28%',
+              alignItems: 'center',
+            }}
+            onPress={() => setGender('Female')}>
+            <Text>Female</Text>
+          </TouchableOpacity>
+          <TouchableOpacity
+            style={{
+              backgroundColor: getBackgroundColor('Other'),
+              padding: 10,
+              borderRadius: 8,
+              marginHorizontal: 5,
+              width: '28%',
+              alignItems: 'center',
+            }}
+            onPress={() => setGender('Other')}>
+            <Text>Other</Text>
+          </TouchableOpacity>
+        </View>
+
+       {gender === 'Male' && <CheckboxExample />}
+
+
+          {/* <View style={styles.inputContainer}>
+            <Image source={require('../../assets/mobile.png')} style={styles.iconStyle} />
+            <TextInput
+              placeholder="Enter your password"
+              style={styles.textInput}
+              placeholderTextColor={'#11111166'}
+            />
+          </View> */}
+
+          {/* <View style={styles.inputContainer}>
+            <Image source={require('../../assets/mobile.png')} style={styles.iconStyle} />
+            <TextInput
+              placeholder="Confirm password"
+              style={styles.textInput}
+              placeholderTextColor={'#11111166'}
+            />
+          </View> */}
+
+          <Button
+            onPress={() => navigation.navigate('OtpScreen')}
+            title="Signup"
+            filled
+            width={'94%'}
+            height={48}
+            size={16}
+            radius={8}
+          />
+
+          <View style={{marginBottom: 10}}>
+            <Text style={{fontSize: 15, fontWeight: '400', marginTop: 20}}>Or</Text>
+          </View>
+
+          {/* Social Buttons */}
+          <View style={styles.socialButtonsContainer}>
+            <TouchableOpacity style={styles.socialButton}>
+              <Image source={require('../../assets/facebook.png')} style={styles.socialIcon} />
+              <Text style={styles.socialText}>Facebook</Text>
+            </TouchableOpacity>
+
+            <TouchableOpacity style={styles.socialButton}>
+              <Image source={require('../../assets/google.png')} style={styles.socialIcon} />
+              <Text style={styles.socialText}>Google</Text>
+            </TouchableOpacity>
+          </View>
+        </View>
+      </ScrollView>
+
+      {/* Bottom Section */}
+      <View style={styles.bottomTextContainer}>
+        <Text style={styles.accountText}>Already have an account?</Text>
+        <TouchableOpacity onPress={() => navigation.navigate('Login')}>
+          <Text style={styles.loginText}>LogIn</Text>
         </TouchableOpacity>
       </View>
     </View>
   );
+};
+
+const styles = {
+  inputContainer: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    marginBottom: 10,
+    borderWidth: 1,
+    borderColor: '#1111111A',
+    borderRadius: 8,
+    paddingHorizontal: 12,
+    width: '94%',
+  },
+  iconStyle: {
+    width: 24,
+    height: 24,
+  },
+  textInput: {
+    flex: 1,
+    marginLeft: 10,
+  },
+  socialButtonsContainer: {
+    flexDirection: 'row',
+    justifyContent: 'center',
+    marginTop: 10,
+    width: '94%',
+    gap: 15,
+  },
+  socialButton: {
+    borderWidth: 2,
+    borderColor: '#d4d9d6',
+    borderRadius: 8,
+    width: '45%',
+    height: 48,
+    alignItems: 'center',
+    justifyContent: 'center',
+    flexDirection: 'row',
+    gap: 12,
+  },
+  socialIcon: {
+    width: 24,
+    height: 24,
+  },
+  socialText: {
+    fontSize: 16,
+    fontWeight: '600',
+    color: '#191919',
+  },
+  bottomTextContainer: {
+    flexDirection: 'row',
+    justifyContent: 'center',
+    alignItems: 'center',
+    paddingVertical: 10,
+  },
+  accountText: {
+    fontSize: 15,
+    fontWeight: '400',
+    color: '#111111',
+  },
+  loginText: {
+    fontSize: 15,
+    fontWeight: '600',
+    marginLeft: 4,
+    color: '#111111',
+  },
 };
 
 export default Signup;

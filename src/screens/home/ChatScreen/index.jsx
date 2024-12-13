@@ -1,4 +1,5 @@
-import React, {useState} from 'react';
+/* eslint-disable react-native/no-inline-styles */
+import React, {useState, useEffect, useRef} from 'react';
 import {
   StyleSheet,
   Text,
@@ -12,71 +13,70 @@ import {
   Image,
 } from 'react-native';
 import CustomHeader from './ChatHeader';
-// import {Icon} from 'react-native-elements';
+import axios from 'axios';
+import io from 'socket.io-client';
+import {API_URL} from '../../../store/constants';
+import {useSelector} from 'react-redux';
 
-export default function ChatScreen() {
+// Replace with your Socket.IO server URL
+const SOCKET_SERVER_URL = 'http://10.0.2.2:5000';
+
+export default function ChatScreen({route}) {
+  const user = useSelector(state => state.user?.user?.data);
+  const {name, userId, profile_image} = route.params;
+  console.log('firstssxssxs', user);
+  const socket = useRef(null); // Ref to store socket instance
+
   const [chatUser] = useState({
-    name: 'Robert Henry',
-    profile_image: 'https://randomuser.me/api/portraits/men/0.jpg',
-    last_seen: 'online',
+    userId: userId, // Unique ID for the chat user (recipient)
+    name: name,
+    profile_image: profile_image,
+    last_seen: 'I`m here',
   });
 
   const [currentUser] = useState({
-    name: 'John Doe',
+    userId: user?._id, // Unique ID for the current user
+    name: user?.name,
   });
 
-  const [messages, setMessages] = useState([
-    {sender: 'John Doe', message: 'Hey there!', time: '6:01 PM'},
-    {
-      sender: 'Robert Henry',
-      message: 'Hello, how are you doing?',
-      time: '6:02 PM',
-    },
-    {
-      sender: 'John Doe',
-      message: 'I am good, how about you?',
-      time: '6:02 PM',
-    },
-    {
-      sender: 'John Doe',
-      message: `😊😇`,
-      time: '6:02 PM',
-    },
-    {
-      sender: 'Robert Henry',
-      message: `Can't wait to meet you.`,
-      time: '6:03 PM',
-    },
-    {
-      sender: 'John Doe',
-      message: `That's great, when are you coming?`,
-      time: '6:03 PM',
-    },
-    {
-      sender: 'Robert Henry',
-      message: `This weekend.`,
-      time: '6:03 PM',
-    },
-    {
-      sender: 'Robert Henry',
-      message: `Around 4 to 6 PM.`,
-      time: '6:04 PM',
-    },
-    {
-      sender: 'John Doe',
-      message: `Great, don't forget to bring me some mangoes.`,
-      time: '6:05 PM',
-    },
-    {
-      sender: 'Robert Henry',
-      message: `Sure!`,
-      time: '6:05 PM',
-    },
-  ]);
-
+  // Messages state will be initially empty and filled by API data
+  const [messages, setMessages] = useState([]);
   const [inputMessage, setInputMessage] = useState('');
 
-  function getTime(date: any) {
+  // Fetch messages from the API when the component is mounted
+  useEffect(() => {
+    const fetchMessages = async () => {
+      try {
+        const response = await axios.get(`${API_URL}chat/messages`);
+        setMessages(response.data);
+      } catch (error) {
+        console.error('Error fetching messagesss:', error);
+      }
+    };
+
+    fetchMessages();
+  }, []);
+
+  // Setup Socket.IO connection and listeners
+  useEffect(() => {
+    socket.current = io(SOCKET_SERVER_URL);
+
+    // Join the room with the current user's unique ID
+    socket.current.emit('join_room', currentUser?.userId);
+
+    // Listen for new messages from the server
+    socket.current.on('receive_message', message => {
+      setMessages(prevMessages => [...prevMessages, message]);
+    });
+
+    // Cleanup on component unmount
+    return () => {
+      socket.current.disconnect();
+    };
+  }, [currentUser.userId]);
+
+  // Utility function to format time
+  function getTime(date) {
     var hours = date.getHours();
     var minutes = date.getMinutes();
     var ampm = hours >= 12 ? 'PM' : 'AM';
@@ -87,21 +87,34 @@ export default function ChatScreen() {
     return strTime;
   }
 
-  function sendMessage() {
+  // Send message to a specific user
+  const sendMessage = async () => {
     if (inputMessage === '') {
       return setInputMessage('');
     }
     let t = getTime(new Date());
-    setMessages([
-      ...messages,
-      {
-        sender: currentUser.name,
-        message: inputMessage,
-        time: t,
-      },
-    ]);
-    setInputMessage('');
-  }
+
+    const newMessage = {
+      sender: currentUser.name,
+      message: inputMessage,
+      time: t,
+      recipientId: chatUser.userId, // Add recipient's userId
+    };
+
+    try {
+      // Make API call to send message
+      await axios.post(`${API_URL}chat/messages`, newMessage);
+
+      // Emit the new message to the server via Socket.IO
+      socket.current.emit('send_message', newMessage);
+
+      // Update local state with the new message
+      setMessages([...messages, newMessage]);
+      setInputMessage('');
+    } catch (error) {
+      console.error('Error sending message:', error);
+    }
+  };
 
   return (
     <TouchableWithoutFeedback onPress={() => Keyboard.dismiss()}>
@@ -117,7 +130,8 @@ export default function ChatScreen() {
                 <View
                   style={{
                     maxWidth: Dimensions.get('screen').width * 0.8,
-                    backgroundColor: '#3a6ee8',
+                    backgroundColor:
+                      item.sender === currentUser.name ? '#316FF6' : '#FF43A0',
                     alignSelf:
                       item.sender === currentUser.name
                         ? 'flex-end'
@@ -130,11 +144,7 @@ export default function ChatScreen() {
                     borderBottomRightRadius:
                       item.sender === currentUser.name ? 0 : 8,
                   }}>
-                  <Text
-                    style={{
-                      color: '#fff',
-                      fontSize: 16,
-                    }}>
+                  <Text style={{color: '#fff', fontSize: 16}}>
                     {item.message}
                   </Text>
                   <Text
@@ -154,20 +164,15 @@ export default function ChatScreen() {
         <View style={{paddingVertical: 10}}>
           <View style={styles.messageInputView}>
             <TextInput
-              defaultValue={inputMessage}
+              value={inputMessage}
               style={styles.messageInput}
               placeholder="Message"
               onChangeText={text => setInputMessage(text)}
-              onSubmitEditing={() => {
-                sendMessage();
-              }}
+              onSubmitEditing={sendMessage}
             />
             <TouchableOpacity
               style={styles.messageSendView}
-              onPress={() => {
-                sendMessage();
-              }}>
-              {/* <Icon name="send" type="material" /> */}
+              onPress={sendMessage}>
               <Image
                 style={{width: 24, height: 24}}
                 source={{

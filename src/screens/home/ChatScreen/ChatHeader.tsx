@@ -1,3 +1,4 @@
+/* eslint-disable react-native/no-inline-styles */
 import React from 'react';
 import {
   View,
@@ -30,8 +31,8 @@ const CustomHeader = ({chatUser}: any) => {
           /> */}
         </TouchableOpacity>
         <Image
-          style={{width: 28, height: 28}}
-          source={require('../../../assets/google.png')}
+          style={{width: 44, height: 44, borderRadius: 30}}
+          source={{uri: chatUser?.profile_image}}
         />
         <View
           style={{

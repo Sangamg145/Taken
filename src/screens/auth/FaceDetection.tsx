@@ -1,3 +1,4 @@
+/* eslint-disable react-native/no-inline-styles */
 import React, {useState, useEffect, useRef} from 'react';
 import {
   View,
@@ -16,7 +17,7 @@ import {
 
 const {width, height} = Dimensions.get('window');
 
-const FaceDetection: React.FC = () => {
+const FaceDetection: React.FC = ({navigation}) => {
   const [cameraPosition, setCameraPosition] = useState<'front' | 'back'>(
     'back',
   );
@@ -41,10 +42,6 @@ const FaceDetection: React.FC = () => {
       </View>
     );
   }
-
-  const toggleCamera = () => {
-    setCameraPosition(prev => (prev === 'back' ? 'front' : 'back'));
-  };
 
   const capturePhoto = async () => {
     if (cameraRef.current) {
@@ -91,14 +88,35 @@ const FaceDetection: React.FC = () => {
       {/* Header with Preview and Toggle Icons */}
       {/* Capture Icon */}
       <View style={styles.footer}>
-        <TouchableOpacity style={styles.captureIcon} onPress={capturePhoto}>
-          <Image
-            style={{width: 64, height: 64}}
-            source={{
-              uri: 'https://cdn.pixabay.com/photo/2022/05/27/11/17/camera-7224946_1280.png',
-            }}
-          />
-        </TouchableOpacity>
+        {!capturedPhoto ? (
+          <TouchableOpacity style={styles.captureIcon} onPress={capturePhoto}>
+            <Image
+              style={{width: 64, height: 64}}
+              source={{
+                uri: 'https://cdn.pixabay.com/photo/2022/05/27/11/17/camera-7224946_1280.png',
+              }}
+            />
+          </TouchableOpacity>
+        ) : (
+          <View
+            style={{
+              display: 'flex',
+              flexDirection: 'row',
+              justifyContent: 'space-around',
+              width: 300,
+            }}>
+            <TouchableOpacity onPress={resetCapture}>
+              <Text style={{color: '#fff', fontSize: 16, fontWeight: '600'}}>
+                Retake
+              </Text>
+            </TouchableOpacity>
+            <TouchableOpacity onPress={() => navigation.navigate('Home')}>
+              <Text style={{color: '#fff', fontSize: 16, fontWeight: '600'}}>
+                Proceed
+              </Text>
+            </TouchableOpacity>
+          </View>
+        )}
       </View>
     </View>
   );

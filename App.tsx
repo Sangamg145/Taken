@@ -2,6 +2,8 @@ import * as React from 'react';
 import {NavigationContainer} from '@react-navigation/native';
 import RNBootSplash from 'react-native-bootsplash';
 import MainNavigator from './src/navigators';
+import {Provider} from 'react-redux';
+import {store} from './src/store';
 
 function App() {
   React.useEffect(() => {
@@ -10,13 +12,16 @@ function App() {
     init().finally(() => {
       setTimeout(async () => {
         await RNBootSplash.hide({fade: true});
-      }, 2000); // 3000 milliseconds = 3 seconds
+      }, 2000);
     });
   }, []);
+
   return (
-    <NavigationContainer>
-      <MainNavigator />
-    </NavigationContainer>
+    <Provider store={store}>
+      <NavigationContainer>
+        <MainNavigator />
+      </NavigationContainer>
+    </Provider>
   );
 }
 export default App;
