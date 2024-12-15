@@ -8,7 +8,7 @@ import {
   StyleSheet,
   Image,
 } from 'react-native';
-// import { Icon } from 'react-native-elements'; // Uncomment if you're using react-native-elements
+import {Icon} from 'react-native-elements'; // Uncomment if you're using react-native-elements
 import {useNavigation} from '@react-navigation/native';
 
 const CustomHeader = ({chatUser}: any) => {
@@ -23,12 +23,7 @@ const CustomHeader = ({chatUser}: any) => {
             navigation.goBack();
           }}>
           {/* Uncomment and use the Icon component if needed */}
-          {/* <Icon
-            name='angle-left'
-            type='font-awesome'
-            size={30}
-            color='#fff'
-          /> */}
+          <Icon name="angle-left" type="font-awesome" size={30} color="#fff" />
         </TouchableOpacity>
         <Image
           style={{width: 44, height: 44, borderRadius: 30}}

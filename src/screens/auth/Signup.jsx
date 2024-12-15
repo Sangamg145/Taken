@@ -11,10 +11,17 @@ import {
   Button,
 } from 'react-native';
 import CheckboxExample from '../../components/generic/CustomCheckbox';
+import { useDispatch } from 'react-redux';
+import { authSignup } from '../../store/actions/auth';
 
 const Signup = ({navigation}) => {
+  const dispatch = useDispatch();
   const [gender, setGender] = useState(null);
   const [name, setName] = useState('');
+  const [email, setEmail] = useState('');
+  const [phone, setPhone] = useState('');
+  const [dob, setDob] = useState('');
+  const [password, setPassword] = useState('');
   const [name1, setName1] = useState('');
 
   const getBackgroundColor = (selectedGender) => {
@@ -25,6 +32,15 @@ const Signup = ({navigation}) => {
     }
     return '#FFFFFF'; // Default background color
   };
+
+  const handleSubmit = () => {
+    if (name && email && phone && dob && password) {
+      dispatch(authSignup(name, email, phone, dob, password, gender, navigation));
+    } else {
+      alert("Please fill all the fields.");
+    }
+  };
+
   return (
     <View style={{flex: 1, width: '100%'}}>
       <ScrollView contentContainerStyle={{alignItems: 'center', paddingVertical: 20}}>
@@ -36,7 +52,7 @@ const Signup = ({navigation}) => {
               style={{width: 100, height: 100, marginBottom: 10, borderRadius: 12}}
             />
           </View>
-{name1 &&<Text>{name1} is awesome name</Text>}
+          {name1 && <Text>{name1} is awesome name</Text>}
           {/* Input Fields */}
           <View style={styles.inputContainer}>
             <Image source={require('../../assets/mobile.png')} style={styles.iconStyle} />
@@ -45,11 +61,8 @@ const Signup = ({navigation}) => {
               style={styles.textInput}
               placeholderTextColor={'#11111166'}
               onChangeText={(text) => setName(text)} // Update the name as the user types
-              onBlur={() => {
-                setName1(name)
-              }}
-              value={name} // Control the value of the input
-            
+              onBlur={() => setName1(name)}
+              value={name}
             />
           </View>
 
@@ -59,6 +72,8 @@ const Signup = ({navigation}) => {
               placeholder="Enter your email"
               style={styles.textInput}
               placeholderTextColor={'#11111166'}
+              onChangeText={(text) => setEmail(text)}
+              value={email}
             />
           </View>
 
@@ -68,6 +83,8 @@ const Signup = ({navigation}) => {
               placeholder="Enter your Phone"
               style={styles.textInput}
               placeholderTextColor={'#11111166'}
+              onChangeText={(text) => setPhone(text)}
+              value={phone}
             />
           </View>
 
@@ -77,78 +94,72 @@ const Signup = ({navigation}) => {
               placeholder="Enter date of birth"
               style={styles.textInput}
               placeholderTextColor={'#11111166'}
+              onChangeText={(text) => setDob(text)}
+              value={dob}
             />
           </View>
 
-          {/* <RadioButtonGroup /> */}
+          {/* Gender Selection */}
           <View style={{flexDirection: 'row', marginBottom: 20}}>
-          <TouchableOpacity
-            style={{
-              backgroundColor: getBackgroundColor('Male'),
-              padding: 10,
-              borderRadius: 8,
-              marginHorizontal: 5,
-              width: '28%',
-              alignItems: 'center',
-            }}
-            onPress={() => setGender('Male')}>
-            <Text>Male</Text>
-          </TouchableOpacity>
-          <TouchableOpacity
-            style={{
-              backgroundColor: getBackgroundColor('Female'),
-              padding: 10,
-              borderRadius: 8,
-              marginHorizontal: 5,
-              width: '28%',
-              alignItems: 'center',
-            }}
-            onPress={() => setGender('Female')}>
-            <Text>Female</Text>
-          </TouchableOpacity>
-          <TouchableOpacity
-            style={{
-              backgroundColor: getBackgroundColor('Other'),
-              padding: 10,
-              borderRadius: 8,
-              marginHorizontal: 5,
-              width: '28%',
-              alignItems: 'center',
-            }}
-            onPress={() => setGender('Other')}>
-            <Text>Other</Text>
-          </TouchableOpacity>
-        </View>
+            <TouchableOpacity
+              style={{
+                backgroundColor: getBackgroundColor('Male'),
+                padding: 10,
+                borderRadius: 8,
+                marginHorizontal: 5,
+                width: '28%',
+                alignItems: 'center',
+              }}
+              onPress={() => setGender('Male')}>
+              <Text>Male</Text>
+            </TouchableOpacity>
+            <TouchableOpacity
+              style={{
+                backgroundColor: getBackgroundColor('Female'),
+                padding: 10,
+                borderRadius: 8,
+                marginHorizontal: 5,
+                width: '28%',
+                alignItems: 'center',
+              }}
+              onPress={() => setGender('Female')}>
+              <Text>Female</Text>
+            </TouchableOpacity>
+            <TouchableOpacity
+              style={{
+                backgroundColor: getBackgroundColor('Other'),
+                padding: 10,
+                borderRadius: 8,
+                marginHorizontal: 5,
+                width: '28%',
+                alignItems: 'center',
+              }}
+              onPress={() => setGender('Other')}>
+              <Text>Other</Text>
+            </TouchableOpacity>
+          </View>
 
-       {gender === 'Male' && <CheckboxExample />}
+          {gender === 'Male' && <CheckboxExample />}
 
-
-          {/* <View style={styles.inputContainer}>
+          {/* Password Field */}
+          <View style={styles.inputContainer}>
             <Image source={require('../../assets/mobile.png')} style={styles.iconStyle} />
             <TextInput
               placeholder="Enter your password"
               style={styles.textInput}
               placeholderTextColor={'#11111166'}
+              secureTextEntry
+              onChangeText={(text) => setPassword(text)}
+              value={password}
             />
-          </View> */}
+          </View>
 
-          {/* <View style={styles.inputContainer}>
-            <Image source={require('../../assets/mobile.png')} style={styles.iconStyle} />
-            <TextInput
-              placeholder="Confirm password"
-              style={styles.textInput}
-              placeholderTextColor={'#11111166'}
-            />
-          </View> */}
-
+          {/* Signup Button */}
           <Button
-            onPress={() => navigation.navigate('OtpScreen')}
+            onPress={handleSubmit}
             title="Signup"
-            filled
-            width={'94%'}
-            height={48}
-            size={16}
-            radius={8}
+            color="#0066CC"
+            style={styles.signupButton}
           />
 
           <View style={{marginBottom: 10}}>
@@ -243,6 +254,11 @@ const styles = {
     fontWeight: '600',
     marginLeft: 4,
     color: '#111111',
+  },
+  signupButton: {
+    width: '94%',
+    height: 48,
+    borderRadius: 8,
   },
 };
 

@@ -8,7 +8,7 @@ import {
   StyleSheet,
   TouchableOpacity,
 } from 'react-native';
-import {API_URL} from '../../../store/constants';
+import {API_URL, headers} from '../../../store/constants';
 
 // ChatItem component
 const ChatItem = ({name, lastMessage, profilePic, time, onPress}) => (
@@ -32,20 +32,19 @@ const ChatList = ({navigation}) => {
 
   // Handle chat press to navigate with specific item data
   const handleChatPress = item => {
-    console.log('first', item);
     navigation.navigate('ChatDetails', {
-      userId: item?._id,
+      receiverId: item?.userId,
       name: item?.name,
       lastMessage: item?.lastMessage,
       profile_image: item?.image,
       lastTime: item?.lastMessageTime,
     });
   };
-  console.log(`Chat with ${chatData?.[0]?.name} clicked!`);
   useEffect(() => {
     const fetchList = async () => {
       try {
-        const response = await axios.get(`${API_URL}chatList`);
+        const config = {headers: await headers()};
+        const response = await axios.get(`${API_URL}chatList`, config);
         setChatData(response?.data?.data); // Assuming response.data contains the array of chat data
       } catch (error) {
         console.error('Error fetching messages:', error);

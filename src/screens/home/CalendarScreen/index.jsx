@@ -8,8 +8,10 @@ import {
   Image,
   TouchableOpacity,
   FlatList,
+  Button,
 } from 'react-native';
 import {Calendar} from 'react-native-calendars';
+import TakenBottomSheet from '../../../components/generic/CustomBottomSheet';
 // import TakenBottomSheet from '../../../components/generic/BottomSheet';
 // A reusable component for event card
 const EventCard = ({event, index, colors}) => {
@@ -151,8 +153,10 @@ const MyCalendar = () => {
           />
         </View>
       )}
-      {/* <TakenBottomSheet refRBSheet={refRBSheet}>
-        <TouchableOpacity style={{width: 30}} onPress={() => refRBSheet.current.close()}>
+      <TakenBottomSheet refRBSheet={refRBSheet}>
+        <TouchableOpacity
+          style={{width: 30}}
+          onPress={() => refRBSheet.current.close()}>
           <View style={{marginTop: 8, marginLeft: 12}}>
             <Image
               source={{
@@ -227,7 +231,7 @@ const MyCalendar = () => {
             </TouchableOpacity>
           </View>
         </View>
-      </TakenBottomSheet> */}
+      </TakenBottomSheet>
     </View>
   );
 };

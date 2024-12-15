@@ -18,6 +18,9 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import {authSuccess} from '../store/actions/auth';
 import {Image, Text} from 'react-native';
 import ChatList from '../screens/home/ChatScreen/ChatList';
+import AccountsScreen from '../screens/home/ProfileScreen/MyAccounts';
+import NotificationScreen from '../screens/home/ProfileScreen/NotificationScreen';
+import HelpCenterScreen from '../screens/home/ProfileScreen/HelpCenter';
 
 // function DetailsScreen() {
 //   const [region, setRegion] = React.useState({
@@ -150,6 +153,12 @@ function MainNavigator() {
         <>
           <Stack.Screen name="Home" component={MyBottomTabs} />
           <Stack.Screen name="ChatDetails" component={ChatScreen} />
+          <Stack.Screen name="MyAccounts" component={AccountsScreen} />
+          <Stack.Screen
+            name="NotificationScreen"
+            component={NotificationScreen}
+          />
+          <Stack.Screen name="HelpCenter" component={HelpCenterScreen} />
         </>
       )}
     </Stack.Navigator>

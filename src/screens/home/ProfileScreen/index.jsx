@@ -6,7 +6,7 @@ import {useDispatch, useSelector} from 'react-redux';
 import {authSuccess} from '../../../store/actions/auth';
 import {getUser} from '../../../store/actions/home';
 
-export default function ProfileScreen() {
+export default function ProfileScreen({navigation}) {
   const dispatch = useDispatch();
   const user = useSelector(state => state.user?.user?.data);
   const handleLogout = async () => {
@@ -49,7 +49,9 @@ export default function ProfileScreen() {
         </TouchableOpacity>
       </View>
       <Text style={styles.name}>{user?.name}</Text>
-      <View style={styles.menuItem}>
+      <TouchableOpacity
+        style={styles.menuItem}
+        onPress={() => navigation.navigate('MyAccounts')}>
         <Image
           source={{
             uri: 'https://static.vecteezy.com/system/resources/previews/021/079/672/non_2x/user-account-icon-for-your-design-only-free-png.png',
@@ -57,8 +59,10 @@ export default function ProfileScreen() {
           style={styles.menuIcon}
         />
         <Text style={styles.menuText}>My Account</Text>
-      </View>
-      <View style={styles.menuItem}>
+      </TouchableOpacity>
+      <TouchableOpacity
+        style={styles.menuItem}
+        onPress={() => navigation.navigate('NotificationScreen')}>
         <Image
           source={{
             uri: 'https://cdn-icons-png.flaticon.com/512/6302/6302741.png',
@@ -66,8 +70,10 @@ export default function ProfileScreen() {
           style={styles.menuIcon}
         />
         <Text style={styles.menuText}>Notifications</Text>
-      </View>
-      <View style={styles.menuItem}>
+      </TouchableOpacity>
+      <TouchableOpacity
+        style={styles.menuItem}
+        onPress={() => navigation.navigate('HelpCenter')}>
         <Image
           source={{
             uri: 'https://static.thenounproject.com/png/2502966-200.png',
@@ -75,7 +81,7 @@ export default function ProfileScreen() {
           style={styles.menuIcon}
         />
         <Text style={styles.menuText}>Help Center</Text>
-      </View>
+      </TouchableOpacity>
     </View>
   );
 }

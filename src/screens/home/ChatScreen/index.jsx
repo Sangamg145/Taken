@@ -1,3 +1,4 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 /* eslint-disable react-native/no-inline-styles */
 import React, {useState, useEffect, useRef} from 'react';
 import {
@@ -23,12 +24,11 @@ const SOCKET_SERVER_URL = 'http://10.0.2.2:5000';
 
 export default function ChatScreen({route}) {
   const user = useSelector(state => state.user?.user?.data);
-  const {name, userId, profile_image} = route.params;
-  console.log('firstssxssxs', user);
+  const {name, receiverId, profile_image} = route.params;
   const socket = useRef(null); // Ref to store socket instance
 
   const [chatUser] = useState({
-    userId: userId, // Unique ID for the chat user (recipient)
+    userId: receiverId, // Unique ID for the chat user (recipient)
     name: name,
     profile_image: profile_image,
     last_seen: 'I`m here',
@@ -38,7 +38,6 @@ export default function ChatScreen({route}) {
     userId: user?._id, // Unique ID for the current user
     name: user?.name,
   });
-
   // Messages state will be initially empty and filled by API data
   const [messages, setMessages] = useState([]);
   const [inputMessage, setInputMessage] = useState('');
@@ -47,7 +46,12 @@ export default function ChatScreen({route}) {
   useEffect(() => {
     const fetchMessages = async () => {
       try {
-        const response = await axios.get(`${API_URL}chat/messages`);
+        // `/messages?sender=${encodeURIComponent(sender)}&receiver=${encodeURIComponent(receiver)}`
+        const response = await axios.get(
+          `${API_URL}chat/messages?sender=${encodeURIComponent(
+            user?._id,
+          )}&receiver=${encodeURIComponent(receiverId)}`,
+        );
         setMessages(response.data);
       } catch (error) {
         console.error('Error fetching messagesss:', error);
@@ -66,6 +70,7 @@ export default function ChatScreen({route}) {
 
     // Listen for new messages from the server
     socket.current.on('receive_message', message => {
+      // Only add the message to state if the receiver matches the current user's ID
       setMessages(prevMessages => [...prevMessages, message]);
     });
 
@@ -95,21 +100,20 @@ export default function ChatScreen({route}) {
     let t = getTime(new Date());
 
     const newMessage = {
-      sender: currentUser.name,
+      sender: user?._id,
       message: inputMessage,
+      receiver: chatUser.userId,
       time: t,
-      recipientId: chatUser.userId, // Add recipient's userId
     };
 
     try {
-      // Make API call to send message
-      await axios.post(`${API_URL}chat/messages`, newMessage);
+      // await axios.post(`${API_URL}chat/messages`, newMessage);
 
       // Emit the new message to the server via Socket.IO
       socket.current.emit('send_message', newMessage);
 
       // Update local state with the new message
-      setMessages([...messages, newMessage]);
+      // setMessages([...messages, newMessage]);
       setInputMessage('');
     } catch (error) {
       console.error('Error sending message:', error);
@@ -131,18 +135,20 @@ export default function ChatScreen({route}) {
                   style={{
                     maxWidth: Dimensions.get('screen').width * 0.8,
                     backgroundColor:
-                      item.sender === currentUser.name ? '#316FF6' : '#FF43A0',
+                      item.sender === currentUser.userId
+                        ? '#316FF6'
+                        : '#FF43A0',
                     alignSelf:
-                      item.sender === currentUser.name
+                      item.sender === currentUser.userId
                         ? 'flex-end'
                         : 'flex-start',
                     marginHorizontal: 10,
                     padding: 10,
                     borderRadius: 8,
                     borderBottomLeftRadius:
-                      item.sender === currentUser.name ? 8 : 0,
+                      item.sender === currentUser.userId ? 8 : 0,
                     borderBottomRightRadius:
-                      item.sender === currentUser.name ? 0 : 8,
+                      item.sender === currentUser.userId ? 0 : 8,
                   }}>
                   <Text style={{color: '#fff', fontSize: 16}}>
                     {item.message}

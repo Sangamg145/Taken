@@ -1,14 +1,10 @@
 import React from 'react';
-import {View, Button, Text} from 'react-native';
+import {View} from 'react-native';
 import RBSheet from 'react-native-raw-bottom-sheet';
 
-export default function TakenBottomSheet({refRBSheet, height}) {
+export default function TakenBottomSheet({refRBSheet, height, children}) {
   return (
     <View>
-      <Button
-        title="OPEN BOTTOM SHEET"
-        onPress={() => refRBSheet.current.open()}
-      />
       <RBSheet
         height={height}
         ref={refRBSheet}
@@ -28,7 +24,7 @@ export default function TakenBottomSheet({refRBSheet, height}) {
         customAvoidingViewProps={{
           enabled: false,
         }}>
-        <Text>dfgdfgb</Text>
+        {children}
       </RBSheet>
     </View>
   );
